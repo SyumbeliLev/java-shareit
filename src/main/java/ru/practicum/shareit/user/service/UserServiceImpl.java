@@ -6,7 +6,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.user.validator.UserValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,31 +14,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 class UserServiceImpl implements UserService {
     private final UserRepository repository;
-    private final UserValidator validator;
 
     @Override
     public UserDto addUser(UserDto userDto) {
-        validator.checkValidation(userDto);
         return UserMapper.toUserDto(repository.addUser(UserMapper.toUser(userDto)));
     }
 
     @Override
     public UserDto updateUser(UserDto userDto, Long userId) {
-        User oldUser = repository.getUserById(userId);
-
-        if (userDto.getId() == null) {
-            userDto.setId(oldUser.getId());
-        }
-        if (userDto.getName() == null) {
-            userDto.setName(oldUser.getName());
-        }
-        if (userDto.getEmail() == null) {
-            userDto.setEmail(oldUser.getEmail());
-        } else if (!userDto.getEmail().equals(oldUser.getEmail())) {
-            validator.checkValidation(userDto);
-        }
-        User updatedUser = UserMapper.toUser(userDto);
-        return UserMapper.toUserDto(repository.updateUser(userId, updatedUser));
+        userDto.setId(userId);
+        User user = UserMapper.toUser(userDto);
+        return UserMapper.toUserDto(repository.updateUser(userId, user));
     }
 
     @Override
