@@ -20,9 +20,9 @@ public class ExceptionsHandler {
         );
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({ConflictException.class, DuplicateEmailException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleConflictException(ConflictException e) {
+    public ErrorResponse handleConflictException(final ShareItException e) {
         return new ErrorResponse(e.getMessage());
     }
 
