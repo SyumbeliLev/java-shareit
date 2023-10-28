@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.DuplicateEmailException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -15,10 +16,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
     @Override
+    @Transactional
     public UserDto create(UserDto userDto) {
         try {
             return UserMapper.toDto(repository.save(UserMapper.toEntity(userDto)));
@@ -29,19 +32,21 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto update(UserDto userDto, Long userId) {
+    @Transactional
+    public UserDto update(UserDto userDto, long userId) {
         User entity = getEntity(userId);
         UserMapper.update(entity, userDto);
         return UserMapper.toDto(repository.save(entity));
     }
 
     @Override
-    public void delete(Long userId) {
+    @Transactional
+    public void delete(long userId) {
         repository.deleteById(userId);
     }
 
     @Override
-    public UserDto findUserById(Long userId) {
+    public UserDto findUserById(long userId) {
         return UserMapper.toDto(getEntity(userId));
     }
 
@@ -53,7 +58,7 @@ class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    private User getEntity(Long id) {
+    private User getEntity(long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь c id = " + id + " не найден!"
                 ));

@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoOut;
 import ru.practicum.shareit.booking.entity.Booking;
@@ -19,6 +20,7 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.entity.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 class BookingServiceImpl implements BookingService {
     private final Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "startDate");
     private final BookingRepository bookingRepository;
@@ -36,7 +39,8 @@ class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public BookingDtoOut create(Long userId, BookingDto dto) {
+    @Transactional
+    public BookingDtoOut create(long userId, BookingDto dto) {
         User user = checkExistUser(userId);
         Item item = itemRepository.findById(dto.getItemId())
                 .orElseThrow(() -> new NotFoundException("Предмет c id = " + dto.getItemId() + " не найден!"));
@@ -46,7 +50,8 @@ class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDtoOut update(Long userId, Long bookingId, Boolean approved) {
+    @Transactional
+    public BookingDtoOut update(long userId, long bookingId, Boolean approved) {
         Booking booking = valid(userId, bookingId, "update");
         BookingStatus newStatus = approved ? BookingStatus.APPROVED : BookingStatus.REJECTED;
         Objects.requireNonNull(booking)
@@ -55,13 +60,13 @@ class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDtoOut findDetailsBooking(Long userId, Long bookingId) {
+    public BookingDtoOut findDetailsBooking(long userId, long bookingId) {
         Booking booking = valid(userId, bookingId, "findDetails");
         return BookingMapper.toDto(Objects.requireNonNull(booking));
     }
 
     @Override
-    public List<BookingDtoOut> findAll(Long bookerId, String state) {
+    public List<BookingDtoOut> findAll(long bookerId, String state) {
         checkExistUser(bookerId);
         List<Booking> bookings = new ArrayList<>();
         switch (BookingState.checkExist(state)) {
@@ -91,7 +96,7 @@ class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDtoOut> findAllOwner(Long ownerId, String state) {
+    public List<BookingDtoOut> findAllOwner(long ownerId, String state) {
         checkExistUser(ownerId);
         List<Booking> bookings = new ArrayList<>();
         switch (BookingState.checkExist(state)) {
@@ -119,7 +124,7 @@ class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList());
     }
 
-    private User checkExistUser(Long userId) {
+    private User checkExistUser(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь c id = " + userId + " не найден!"));
     }
@@ -140,7 +145,7 @@ class BookingServiceImpl implements BookingService {
         }
     }
 
-    private Booking valid(Long userId, Long bookingId, String operation) {
+    private Booking valid(long userId, long bookingId, String operation) {
         checkExistUser(userId);
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Бронь с id: " + bookingId + " не найдена!"));
