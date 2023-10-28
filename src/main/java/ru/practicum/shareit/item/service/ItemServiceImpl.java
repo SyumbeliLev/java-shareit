@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDtoOut;
 import ru.practicum.shareit.booking.entity.Booking;
 import ru.practicum.shareit.booking.entity.BookingStatus;
@@ -33,6 +34,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -40,7 +42,8 @@ class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
-    public ItemDto create(ItemDto itemDto, Long userId) {
+    @Transactional
+    public ItemDto create(ItemDto itemDto, long userId) {
         UserDto userDto = UserMapper.toDto(getUser(userId));
         Item item = ItemMapper.toEntity(itemDto);
         item.setOwner(UserMapper.toEntity(userDto));
@@ -48,7 +51,8 @@ class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto update(ItemDto itemDto, Long userId, Long itemId) {
+    @Transactional
+    public ItemDto update(ItemDto itemDto, long userId, long itemId) {
         Item entity = getEntity(itemId);
         if (!entity.getOwner()
                 .getId()
@@ -60,7 +64,7 @@ class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto findItemById(Long itemId, Long userId) {
+    public ItemDto findItemById(long itemId, long userId) {
         getUser(userId);
         Item item = getEntity(itemId);
 
@@ -82,7 +86,7 @@ class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> findAll(Long userId) {
+    public List<ItemDto> findAll(long userId) {
         getUser(userId);
         List<Item> itemList = itemRepository.findAllByOwnerId(userId);
         List<Long> idList = itemList.stream()
@@ -115,7 +119,8 @@ class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public CommentDto createComment(Long userId, CommentDto commentDto, Long itemId) {
+    @Transactional
+    public CommentDto createComment(long userId, CommentDto commentDto, long itemId) {
         User user = getUser(userId);
         Item item = getEntity(itemId);
 
@@ -128,12 +133,12 @@ class ItemServiceImpl implements ItemService {
         return CommentMapper.toDto(entityComment);
     }
 
-    private Item getEntity(Long id) {
+    private Item getEntity(long id) {
         return itemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Предмет c id = " + id + " не найден!"));
     }
 
-    private User getUser(Long userId) {
+    private User getUser(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь c id = " + userId + " не найден!"));
     }

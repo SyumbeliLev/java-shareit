@@ -24,19 +24,19 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@Validated({ValidationGroups.Update.class}) @RequestBody UserDto userDto, @PathVariable Long id) {
+    public UserDto update(@Validated({ValidationGroups.Update.class}) @RequestBody UserDto userDto, @PathVariable long id) {
         log.info("Обновление пользователя с id: {}", id);
         return service.update(userDto, id);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id) {
+    public void deleteById(@PathVariable long id) {
         log.info("Удаление пользователя с id: {}", id);
         service.delete(id);
     }
 
     @GetMapping("/{id}")
-    public UserDto findById(@PathVariable Long id) {
+    public UserDto findById(@PathVariable long id) {
         log.info("Запрос пользователя с id: {}", id);
         return service.findUserById(id);
     }

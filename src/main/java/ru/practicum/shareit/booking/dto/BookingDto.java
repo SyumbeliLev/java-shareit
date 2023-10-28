@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.user.ValidationGroups;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
@@ -13,12 +14,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookingDto {
-    @NotNull
+    @NotNull(groups = ValidationGroups.Create.class)
     private Long itemId;
-    @NotNull
-    @FutureOrPresent
+    @NotNull(groups = ValidationGroups.Create.class)
+    @FutureOrPresent(groups = ValidationGroups.Create.class)
     private LocalDateTime start;
-    @NotNull
-    @Future
+    @NotNull(groups = ValidationGroups.Create.class)
+    @Future(groups = ValidationGroups.Create.class)
     private LocalDateTime end;
 }

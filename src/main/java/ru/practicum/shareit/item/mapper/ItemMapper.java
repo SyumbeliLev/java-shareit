@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.mapper;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.dto.BookingDtoOut;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -8,6 +9,7 @@ import ru.practicum.shareit.item.entity.Item;
 
 import java.util.List;
 
+@UtilityClass
 public class ItemMapper {
     public static ItemDto toDto(Item item) {
         return ItemDto.builder()
