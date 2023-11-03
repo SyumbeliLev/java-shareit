@@ -11,7 +11,7 @@ import java.util.List;
 
 @UtilityClass
 public class ItemMapper {
-    public static ItemDto toDto(Item item) {
+    public ItemDto toDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -22,7 +22,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public static ItemDto toDto(Item item, BookingDtoOut lastBooking, List<CommentDto> comments, BookingDtoOut nextBooking) {
+    public ItemDto toDto(Item item, BookingDtoOut lastBooking, List<CommentDto> comments, BookingDtoOut nextBooking) {
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -36,7 +36,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public static Item toEntity(ItemDto itemDto) {
+    public Item toEntity(ItemDto itemDto) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())
@@ -45,13 +45,13 @@ public class ItemMapper {
                 .build();
     }
 
-    public static ItemDtoBooking toDtoBooking(Item item) {
+    public ItemDtoBooking toDtoBooking(Item item) {
         return new ItemDtoBooking(
                 item.getId(),
                 item.getName());
     }
 
-    public static void update(ItemDto dto, Item entity) {
+    public void update(ItemDto dto, Item entity) {
         String name = dto.getName();
         if (name != null && !name.isBlank()) {
             entity.setName(name);

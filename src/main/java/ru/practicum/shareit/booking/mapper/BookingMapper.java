@@ -12,7 +12,7 @@ import ru.practicum.shareit.user.mapper.UserMapper;
 
 @UtilityClass
 public class BookingMapper {
-    public static Booking toBooking(User booker, Item item, BookingDto bookingDto) {
+    public Booking toBooking(User booker, Item item, BookingDto bookingDto) {
         return Booking.builder()
                 .item(item)
                 .startDate(bookingDto.getStart())
@@ -22,7 +22,7 @@ public class BookingMapper {
                 .build();
     }
 
-    public static BookingDtoOut toDto(Booking booking) {
+    public BookingDtoOut toDto(Booking booking) {
         return new BookingDtoOut(
                 booking.getId(),
                 ItemMapper.toDtoBooking(booking.getItem()),

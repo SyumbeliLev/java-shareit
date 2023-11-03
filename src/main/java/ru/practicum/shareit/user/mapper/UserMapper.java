@@ -7,7 +7,7 @@ import ru.practicum.shareit.user.entity.User;
 
 @UtilityClass
 public class UserMapper {
-    public static UserDto toDto(User user) {
+    public UserDto toDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -15,7 +15,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static User toEntity(UserDto userDto) {
+    public User toEntity(UserDto userDto) {
         return User.builder()
                 .id(userDto.getId())
                 .email(userDto.getEmail())
@@ -23,7 +23,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static void update(User entity, UserDto dto) {
+    public void update(User entity, UserDto dto) {
         String name = dto.getName();
         if (name != null && !name.isBlank()) {
             entity.setName(name);
