@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionsHandler {
 
-    @ExceptionHandler({ItemNotExistException.class, UserNotExistException.class})
+    @ExceptionHandler({NotFoundException.class, NotOwnerException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotExistException(final ShareItException e) {
         return new ErrorResponse(
@@ -20,7 +20,7 @@ public class ExceptionsHandler {
         );
     }
 
-    @ExceptionHandler({ConflictException.class, DuplicateEmailException.class})
+    @ExceptionHandler(DuplicateEmailException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleConflictException(final ShareItException e) {
         return new ErrorResponse(e.getMessage());
@@ -30,13 +30,18 @@ public class ExceptionsHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final MethodArgumentNotValidException e) {
         return new ErrorResponse(
-                String.format("Ошибка валидации: %s", e.getBindingResult().getAllErrors().get(0).getDefaultMessage())
+                String.format("Ошибка валидации: %s", e.getBindingResult()
+                        .getAllErrors()
+                        .get(0)
+                        .getDefaultMessage())
         );
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponse handleNotOwnerException(final NotOwnerException e) {
-        return new ErrorResponse(e.getMessage());
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationException(final ValidationException e) {
+        return new ErrorResponse(
+                String.format(e.getMessage())
+        );
     }
 }
