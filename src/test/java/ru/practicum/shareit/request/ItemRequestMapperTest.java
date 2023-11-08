@@ -67,7 +67,7 @@ public class ItemRequestMapperTest {
 
 
     @Test
-    void toDto(){
+    void toDto() {
         User owner = User.builder()
                 .id(1L)
                 .build();
