@@ -23,7 +23,7 @@ public class UserMapper {
                 .build();
     }
 
-    public void update(User entity, UserDto dto) {
+    public User update(User entity, UserDto dto) {
         String name = dto.getName();
         if (name != null && !name.isBlank()) {
             entity.setName(name);
@@ -32,5 +32,6 @@ public class UserMapper {
         if (email != null && !email.isBlank()) {
             entity.setEmail(email);
         }
+        return entity;
     }
 }
