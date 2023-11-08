@@ -51,7 +51,7 @@ public class ItemMapper {
                 item.getName());
     }
 
-    public void update(ItemDto dto, Item entity) {
+    public Item update(ItemDto dto, Item entity) {
         String name = dto.getName();
         if (name != null && !name.isBlank()) {
             entity.setName(name);
@@ -65,7 +65,8 @@ public class ItemMapper {
         }
         Long requestId = dto.getRequestId();
         if (requestId != null) {
-            entity.setRequest(null);
+            entity.setRequest(entity.getRequest());
         }
+        return entity;
     }
 }

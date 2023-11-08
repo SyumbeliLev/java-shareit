@@ -3,7 +3,6 @@ package ru.practicum.shareit.user.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
 import ru.practicum.shareit.user.ValidationGroups.Create;
 import ru.practicum.shareit.user.ValidationGroups.Update;
 
@@ -20,4 +19,6 @@ public class UserDto {
     @Email(groups = {Create.class, Update.class}, message = "Неверный формат email!")
     @NotBlank(groups = Create.class, message = "Поле email пустое!!")
     private String email;
+
+
 }
