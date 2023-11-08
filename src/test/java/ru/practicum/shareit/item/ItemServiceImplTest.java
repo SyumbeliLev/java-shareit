@@ -167,10 +167,10 @@ class ItemServiceImplTest {
                 .owner(user2)
                 .build();
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(updatedItem));
-        NotFoundException NotFoundException = assertThrows(NotFoundException.class,
+        NotFoundException notFoundException = assertThrows(NotFoundException.class,
                 () -> itemService.update(ItemMapper.toDto(Objects.requireNonNull(updatedItem)), itemDto.getId(), user.getId()));
 
-        assertEquals(NotFoundException.getMessage(), "Пользователь с id = " + user.getId() +
+        assertEquals(notFoundException.getMessage(), "Пользователь с id = " + user.getId() +
                 " не является собственником вещи id = " + item.getId());
     }
 
