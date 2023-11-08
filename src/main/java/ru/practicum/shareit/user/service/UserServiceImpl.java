@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.DuplicateEmailException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.entity.User;
+import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
@@ -17,14 +17,16 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
     @Override
     @Transactional
     public UserDto create(UserDto userDto) {
         try {
-            return UserMapper.toDto(repository.save(UserMapper.toEntity(userDto)));
+            User user = UserMapper.toEntity(userDto);
+            repository.save(user);
+            return UserMapper.toDto(user);
         } catch (DataIntegrityViolationException e) {
             System.out.println(e.getMessage());
             throw new DuplicateEmailException(userDto.getEmail() + " такой email уже зарегистрирован!");
@@ -36,7 +38,8 @@ class UserServiceImpl implements UserService {
     public UserDto update(UserDto userDto, long userId) {
         User entity = getEntity(userId);
         UserMapper.update(entity, userDto);
-        return UserMapper.toDto(repository.save(entity));
+        repository.save(entity);
+        return UserMapper.toDto(entity);
     }
 
     @Override
