@@ -1,10 +1,13 @@
 package ru.practicum.shareit.request;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.item.entity.Item;
 import ru.practicum.shareit.request.entity.ItemRequest;
@@ -12,6 +15,7 @@ import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.entity.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,11 +72,27 @@ class RequestRepositoryTest {
     }
 
     @Test
-    void findAllByRequesterIdOrderByCreated() {
+    void findAllByRequesterId() {
         List<ItemRequest> requests = requestRepository.findAllByRequesterId(1L);
 
         assertEquals(requests.size(), 1);
         assertEquals(requests.get(0)
                 .getDescription(), "request description");
+    }
+
+    @Test
+    void findAllByAllOtherUsers_whenUserIdIsUserOneId_thenReturnListOfUserTwoRequest() {
+        Pageable page = PageRequest.of(0, 10);
+        List<ItemRequest> requestList = new ArrayList<>(requestRepository.findAllByOtherUsers(user1.getId(), page));
+
+        assertEquals(requestList.size(), 1);
+        assertEquals(requestList.get(0)
+                .getRequester()
+                .getName(), "name2");
+    }
+
+    @AfterEach
+    public void deleteItems() {
+        requestRepository.deleteAll();
     }
 }

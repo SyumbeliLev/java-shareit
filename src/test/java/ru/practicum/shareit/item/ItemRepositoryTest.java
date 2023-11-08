@@ -52,9 +52,17 @@ class ItemRepositoryTest {
     }
 
     @Test
-    void findAllByOwnerIdOrderByIdAsc() {
+    void findAllByOwnerId() {
         List<Item> items = itemRepository.findAllByOwnerId(1L, PageRequest.of(0, 1));
 
+        assertEquals(items.size(), 1);
+        assertEquals(items.get(0)
+                .getName(), "name");
+    }
+
+    @Test
+    void search() {
+        List<Item> items = itemRepository.search("name", PageRequest.of(0, 1));
         assertEquals(items.size(), 1);
         assertEquals(items.get(0)
                 .getName(), "name");
