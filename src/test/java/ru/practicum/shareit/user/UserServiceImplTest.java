@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.exception.DuplicateEmailException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.entity.User;
@@ -36,7 +37,7 @@ class UserServiceImplTest {
             .build();
 
     @Test
-    void addNewUserReturnUserDto() {
+    void createNewUserReturnUserDto() {
         User userToSave = User.builder()
                 .id(1L)
                 .name("name")
@@ -48,6 +49,16 @@ class UserServiceImplTest {
 
         assertEquals(userDto, actualUserDto);
         verify(userRepository).save(userToSave);
+    }
+
+    @Test
+    void createNewUserReturnUserDtoThenThrowDuplicateEmailException() {
+        User expectedUser = new User();
+        when(userRepository.save(expectedUser)).thenThrow(new DuplicateEmailException("такой email уже зарегистрирован!"));
+
+        DuplicateEmailException emptyFieldException = assertThrows(DuplicateEmailException.class,
+                () -> userService.create(UserMapper.toDto(expectedUser)));
+        assertEquals(emptyFieldException.getMessage(), "такой email уже зарегистрирован!");
     }
 
     @Test

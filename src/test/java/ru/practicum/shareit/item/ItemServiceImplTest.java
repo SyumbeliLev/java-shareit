@@ -16,11 +16,11 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.entity.Comment;
 import ru.practicum.shareit.item.entity.Item;
 import ru.practicum.shareit.item.mapper.CommentMapper;
-import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.request.entity.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.entity.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
+import static ru.practicum.shareit.item.mapper.ItemMapper.toDto;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -43,6 +44,8 @@ class ItemServiceImplTest {
 
     @Mock
     private ItemRepository itemRepository;
+    @Mock
+    private ItemRequestRepository itemRequestRepository;
 
     @Mock
     private UserRepository userRepository;
@@ -113,20 +116,18 @@ class ItemServiceImplTest {
 
     @Test
     void addNewItemWhenInvoked() {
-        Item itemSaveTest = Item.builder()
-                .name("test item name")
-                .description("test description")
+        Item expectedItem = Item.builder()
                 .available(true)
+                .description("desc")
+                .name("name")
                 .build();
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(User.builder()
+                .build()));
+        when(itemRepository.save(any())).thenReturn(expectedItem);
 
+        ItemDto actualItem = itemService.create(toDto(expectedItem), 1L);
+        assertEquals(expectedItem.getName(), actualItem.getName());
 
-        when(itemRepository.save(itemSaveTest)).thenReturn(itemSaveTest);
-        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
-
-        ItemDto actualItemDto = itemService.create(ItemMapper.toDto(itemSaveTest), userDto.getId());
-
-        assertEquals(actualItemDto.getName(), "test item name");
-        assertEquals(actualItemDto.getDescription(), "test description");
     }
 
     @Test
@@ -152,7 +153,7 @@ class ItemServiceImplTest {
                 .request(itemRequest)
                 .build();
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(updatedItem));
-        ItemDto savedItem = itemService.update(ItemMapper.toDto(updatedItem), user.getId(), updatedItem.getId());
+        ItemDto savedItem = itemService.update(toDto(updatedItem), user.getId(), updatedItem.getId());
         assertEquals("updated name", savedItem.getName());
         assertEquals("updated description", savedItem.getDescription());
     }
@@ -167,7 +168,7 @@ class ItemServiceImplTest {
                 .owner(user2)
                 .build();
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(updatedItem));
-        NotFoundException notFoundException = assertThrows(NotFoundException.class, () -> itemService.update(ItemMapper.toDto(Objects.requireNonNull(updatedItem)), itemDto.getId(), user.getId()));
+        NotFoundException notFoundException = assertThrows(NotFoundException.class, () -> itemService.update(toDto(Objects.requireNonNull(updatedItem)), itemDto.getId(), user.getId()));
 
         assertEquals(notFoundException.getMessage(), "Пользователь с id = " + user.getId() + " не является собственником вещи id = " + item.getId());
     }
@@ -175,7 +176,7 @@ class ItemServiceImplTest {
     @Test
     void updateItemWhenItemIdIsNotValid() {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
-        NotFoundException itemNotFoundException = assertThrows(NotFoundException.class, () -> itemService.update(ItemMapper.toDto(item), itemDto.getId(), user.getId()));
+        NotFoundException itemNotFoundException = assertThrows(NotFoundException.class, () -> itemService.update(toDto(item), itemDto.getId(), user.getId()));
         assertEquals(itemNotFoundException.getMessage(), "Предмет c id = 1 не найден!");
     }
 

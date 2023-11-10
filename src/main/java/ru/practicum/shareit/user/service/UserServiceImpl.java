@@ -28,7 +28,6 @@ public class UserServiceImpl implements UserService {
             repository.save(user);
             return UserMapper.toDto(user);
         } catch (DataIntegrityViolationException e) {
-            System.out.println(e.getMessage());
             throw new DuplicateEmailException(userDto.getEmail() + " такой email уже зарегистрирован!");
         }
     }

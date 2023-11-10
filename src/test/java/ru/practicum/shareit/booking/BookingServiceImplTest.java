@@ -113,7 +113,7 @@ class BookingServiceImplTest {
 
 
     @Test
-    void create() {
+    void createTest() {
         BookingDtoOut expectedBookingDtoOut = BookingMapper.toDto(BookingMapper.toBooking(user, item, bookingDto));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
@@ -161,7 +161,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void update() {
+    void updateTest() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(bookingWaiting));
         when(bookingRepository.save(any(Booking.class))).thenReturn(bookingWaiting);
@@ -201,7 +201,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getById() {
+    void findDetailsBookingTest() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         BookingDtoOut expectedBookingDtoOut = BookingMapper.toDto(booking);
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
@@ -212,7 +212,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByIdWhenBookingIdIsNotValidShouldThrowObjectNotFoundException() {
+    void findDetailsBookingWhenBookingIdIsNotValidShouldThrowObjectNotFoundException() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -223,7 +223,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByIdWhenUserIsNotItemOwnerShouldThrowObjectNotFoundException() {
+    void findDetailsBookingWhenUserIsNotItemOwnerShouldThrowObjectNotFoundException() {
         NotFoundException bookingNotFoundException = assertThrows(NotFoundException.class,
                 () -> bookingService.findDetailsBooking(3L, booking.getId()));
 
@@ -231,7 +231,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllByBookerWhenBookingStateAll() {
+    void findAllByBookerWhenBookingStateAll() {
         List<BookingDtoOut> expectedBookingsDtoOut = List.of(BookingMapper.toDto(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByBookerId(anyLong(), any(Pageable.class))).thenReturn(List.of(booking));
@@ -242,7 +242,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllByBooker_whenBookingStateCURRENT() {
+    void findAllByBooker_whenBookingStateCURRENT() {
         List<BookingDtoOut> expectedBookingsDtoOut = List.of(BookingMapper.toDto(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByBookerIdAndCurrentDate(anyLong(), any(LocalDateTime.class), any(Pageable.class)))
@@ -254,7 +254,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllByBookerWhenBookingStatePAST() {
+    void findAllByBookerWhenBookingStatePAST() {
         List<BookingDtoOut> expectedBookingsDtoOut = List.of(BookingMapper.toDto(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByBookerIdAndEndDateBefore(anyLong(), any(LocalDateTime.class), any(Pageable.class)))
@@ -266,7 +266,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllByBookerWhenBookingStateFUTURE() {
+    void findAllByBookerWhenBookingStateFUTURE() {
         List<BookingDtoOut> expectedBookingsDtoOut = List.of(BookingMapper.toDto(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByBookerIdAndEndDateAfter(anyLong(), any(LocalDateTime.class), any(Pageable.class)))
@@ -278,7 +278,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllByBookerWhenBookingStateWAITING() {
+    void findAllByBookerWhenBookingStateWAITING() {
         List<BookingDtoOut> expectedBookingsDtoOut = List.of(BookingMapper.toDto(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByBookerIdAndStatus(anyLong(), any(BookingStatus.WAITING.getDeclaringClass()), any(Pageable.class)))
@@ -291,13 +291,13 @@ class BookingServiceImplTest {
 
 
     @Test
-    void getAllByBookerWhenBookingStateIsNotValidShouldThrowNotFoundException() {
+    void findAllByBookerWhenBookingStateIsNotValidShouldThrowNotFoundException() {
         assertThrows(NotFoundException.class,
                 () -> bookingService.findAll(user.getId(), "ERROR", PageRequest.of(0 / 10, 10)));
     }
 
     @Test
-    void getAllByOwnerWhenBookingStateAll() {
+    void findAllByOwnerWhenBookingStateAll() {
         List<BookingDtoOut> expectedBookingsDtoOut = List.of(BookingMapper.toDto(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByItem_Owner_Id(anyLong(), any(Pageable.class))).thenReturn(List.of(booking));
@@ -308,7 +308,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllByOwnerWhenBookingStateCURRENT() {
+    void findAllByOwnerWhenBookingStateCURRENT() {
         List<BookingDtoOut> expectedBookingsDtoOut = List.of(BookingMapper.toDto(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByItem_Owner_IdAndCurrentDate(anyLong(), any(LocalDateTime.class), any(Pageable.class)))
@@ -320,7 +320,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllByOwnerWhenBookingStatePAST() {
+    void findAllByOwnerWhenBookingStatePAST() {
         List<BookingDtoOut> expectedBookingsDtoOut = List.of(BookingMapper.toDto(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByItem_Owner_IdAndEndDateBefore(anyLong(), any(LocalDateTime.class), any(Pageable.class)))
@@ -332,7 +332,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllByOwnerWhenBookingStateFUTURE() {
+    void findAllByOwnerWhenBookingStateFUTURE() {
         List<BookingDtoOut> expectedBookingsDtoOut = List.of(BookingMapper.toDto(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByItem_Owner_IdAndEndDateAfter(anyLong(), any(LocalDateTime.class), any(Pageable.class)))
@@ -344,7 +344,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllByOwnerWhenBookingStateWAITING() {
+    void findAllByOwnerWhenBookingStateWAITING() {
         List<BookingDtoOut> expectedBookingsDtoOut = List.of(BookingMapper.toDto(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByItem_Owner_IdAndStatus(anyLong(), any(BookingStatus.WAITING.getDeclaringClass()), any(Pageable.class)))
@@ -356,7 +356,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllByOwnerWhenBookingStateREJECTED() {
+    void findAllByOwnerWhenBookingStateREJECTED() {
         List<BookingDtoOut> expectedBookingsDtoOut = List.of(BookingMapper.toDto(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByItem_Owner_IdAndStatus(anyLong(), any(BookingStatus.REJECTED.getDeclaringClass()), any(Pageable.class)))
@@ -369,7 +369,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllByBookerWhenBookingStateREJECTED() {
+    void findAllByBookerWhenBookingStateREJECTED() {
         List<BookingDtoOut> expectedBookingsDtoOut = List.of(BookingMapper.toDto(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByBookerIdAndStatus(anyLong(), any(BookingStatus.WAITING.getDeclaringClass()), any(Pageable.class)))
@@ -381,7 +381,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllByOwnerWhenBookingStateIsNotValidThenThrowIllegalArgumentException() {
+    void findAllByOwnerWhenBookingStateIsNotValidThenThrowIllegalArgumentException() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 
         assertThrows(ValidationException.class,

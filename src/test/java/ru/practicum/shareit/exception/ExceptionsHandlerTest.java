@@ -9,27 +9,27 @@ public class ExceptionsHandlerTest {
 
     @Test
     public void testHandleNotExistException() {
-        ShareItException exception = new ShareItException("User not found");
+        NotFoundException exception = new NotFoundException("User not found");
         ErrorResponse result = exceptionsHandler.handleNotExistException(exception);
         assertEquals("User not found", result.getError());
     }
 
     @Test
-    public void testHandleConflictException() {
-        ShareItException exception = new ShareItException("Conflict");
+    public void handleConflictExceptionTest() {
+        DuplicateEmailException exception = new DuplicateEmailException("Conflict");
         ErrorResponse result = exceptionsHandler.handleNotExistException(exception);
         assertEquals("Conflict", result.getError());
     }
 
     @Test
-    public void testHandleValidationException() {
-        ShareItException exception = new ShareItException("User not valid");
+    public void handleValidationExceptionTest() {
+        ValidationException exception = new ValidationException("User not valid");
         ErrorResponse result = exceptionsHandler.handleNotExistException(exception);
         assertEquals("User not valid", result.getError());
     }
 
     @Test
-    public void testHandleOtherException() {
+    public void handleOtherExceptionTest() {
         ShareItException exception = new ShareItException("INTERNAL_SERVER_ERROR");
         ErrorResponse result = exceptionsHandler.handleNotExistException(exception);
         assertEquals("INTERNAL_SERVER_ERROR", result.getError());

@@ -35,7 +35,7 @@ class CommentMapperTest {
     }
 
     @Test
-    void toCommentDb() {
+    void toEntity() {
         CommentDto commentDto = CommentDto.builder()
                 .text("text")
                 .created(LocalDateTime.now())
@@ -54,7 +54,7 @@ class CommentMapperTest {
     }
 
     @Test
-    void toCommentDto() {
+    void toDto() {
         Comment comment = Comment.builder()
                 .author(owner)
                 .created(LocalDateTime.now())
