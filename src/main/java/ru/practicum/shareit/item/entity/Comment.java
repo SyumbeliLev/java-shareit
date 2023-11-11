@@ -1,16 +1,14 @@
 package ru.practicum.shareit.item.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.shareit.user.entity.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,6 +29,4 @@ public class Comment {
     @Column(name = "created")
     @CreationTimestamp
     private LocalDateTime created;
-
-
 }

@@ -38,7 +38,6 @@ class ItemRepositoryTest {
             .owner(user)
             .build();
 
-
     @BeforeEach
     public void addItems() {
         testEntityManager.persist(user);

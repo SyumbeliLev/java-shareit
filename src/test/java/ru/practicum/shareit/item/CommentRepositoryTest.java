@@ -45,7 +45,6 @@ class CommentRepositoryTest {
             .text("comment")
             .build();
 
-
     @BeforeEach
     public void init() {
         testEntityManager.persist(user);

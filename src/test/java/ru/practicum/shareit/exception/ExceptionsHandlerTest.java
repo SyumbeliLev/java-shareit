@@ -1,6 +1,7 @@
 package ru.practicum.shareit.exception;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,9 +17,9 @@ public class ExceptionsHandlerTest {
 
     @Test
     public void handleConflictExceptionTest() {
-        DuplicateEmailException exception = new DuplicateEmailException("Conflict");
-        ErrorResponse result = exceptionsHandler.handleNotExistException(exception);
-        assertEquals("Conflict", result.getError());
+        DataIntegrityViolationException exception = new DataIntegrityViolationException("Такой email, уже зарегистрирован!");
+        ErrorResponse result = exceptionsHandler.handleConflictException(exception);
+        assertEquals("Такой email, уже зарегистрирован!", result.getError());
     }
 
     @Test

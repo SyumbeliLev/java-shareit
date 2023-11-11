@@ -1,10 +1,8 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.exception.DuplicateEmailException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.entity.User;
@@ -23,20 +21,23 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto create(UserDto userDto) {
-        try {
-            User user = UserMapper.toEntity(userDto);
-            repository.save(user);
-            return UserMapper.toDto(user);
-        } catch (DataIntegrityViolationException e) {
-            throw new DuplicateEmailException(userDto.getEmail() + " такой email уже зарегистрирован!");
-        }
+        return UserMapper.toDto(repository.save(UserMapper.toEntity(userDto)));
     }
 
     @Override
     @Transactional
     public UserDto update(UserDto userDto, long userId) {
         User entity = getEntity(userId);
-        UserMapper.update(entity, userDto);
+
+        String name = userDto.getName();
+        if (name != null && !name.isBlank()) {
+            entity.setName(name);
+        }
+        String email = userDto.getEmail();
+        if (email != null && !email.isBlank()) {
+            entity.setEmail(email);
+        }
+
         repository.save(entity);
         return UserMapper.toDto(entity);
     }

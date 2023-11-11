@@ -33,7 +33,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    @Transactional
     public List<ItemRequestDtoOut> findUserRequests(long requestorId) {
         userService.findUserById(requestorId);
         return repository.findAllByRequesterId(requestorId)
@@ -43,7 +42,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    @Transactional
     public List<ItemRequestDtoOut> findAllRequests(long userId, Pageable pageable) {
         userService.findUserById(userId);
         return repository.findAllByOtherUsers(userId, pageable)
@@ -53,7 +51,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    @Transactional
     public ItemRequestDtoOut findById(long userId, long requestId) {
         userService.findUserById(userId);
 

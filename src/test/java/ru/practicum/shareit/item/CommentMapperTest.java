@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 class CommentMapperTest {
 
     private User owner;

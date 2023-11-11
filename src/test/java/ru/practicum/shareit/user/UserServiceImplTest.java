@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.practicum.shareit.exception.DuplicateEmailException;
+import org.springframework.dao.DataIntegrityViolationException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.entity.User;
@@ -22,14 +22,10 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
-
     @Mock
     private UserRepository userRepository;
-
     @InjectMocks
     private UserServiceImpl userService;
-
-
     private final UserDto userDto = UserDto.builder()
             .id(1L)
             .name("name")
@@ -54,29 +50,24 @@ class UserServiceImplTest {
     @Test
     void createNewUserReturnUserDtoThenThrowDuplicateEmailException() {
         User expectedUser = new User();
-        when(userRepository.save(expectedUser)).thenThrow(new DuplicateEmailException("такой email уже зарегистрирован!"));
+        when(userRepository.save(expectedUser)).thenThrow(new DataIntegrityViolationException("такой email уже зарегистрирован!"));
 
-        DuplicateEmailException emptyFieldException = assertThrows(DuplicateEmailException.class,
-                () -> userService.create(UserMapper.toDto(expectedUser)));
+        DataIntegrityViolationException emptyFieldException = assertThrows(DataIntegrityViolationException.class, () -> userService.create(UserMapper.toDto(expectedUser)));
         assertEquals(emptyFieldException.getMessage(), "такой email уже зарегистрирован!");
     }
 
     @Test
     void updateUserTest() {
-        UserDto user = userService.create(userDto);
-        Long userId = user.getId();
-
         UserDto fieldsToUpdate = UserDto.builder()
                 .build();
         fieldsToUpdate.setEmail("updated@example.com");
         fieldsToUpdate.setName("Updated User");
-        when(userRepository.findById(userId)).thenReturn(Optional.of(UserMapper.toEntity(user)));
-        UserDto updatedUserDto = userService.update(fieldsToUpdate, userId);
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(UserMapper.toEntity(userDto)));
+        UserDto updatedUserDto = userService.update(fieldsToUpdate, userDto.getId());
         assertNotNull(updatedUserDto);
         assertEquals("Updated User", updatedUserDto.getName());
         assertEquals("updated@example.com", updatedUserDto.getEmail());
     }
-
 
     @Test
     void findUserByIdWhenUserFound() {
@@ -99,8 +90,7 @@ class UserServiceImplTest {
         long userId = 0L;
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        NotFoundException userNotFoundException = assertThrows(NotFoundException.class,
-                () -> userService.findUserById(userId));
+        NotFoundException userNotFoundException = assertThrows(NotFoundException.class, () -> userService.findUserById(userId));
 
         assertEquals(userNotFoundException.getMessage(), "Пользователь c id = 0 не найден!");
     }

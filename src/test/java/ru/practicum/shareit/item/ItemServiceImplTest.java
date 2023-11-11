@@ -20,8 +20,6 @@ import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.request.entity.ItemRequest;
-import ru.practicum.shareit.request.repository.ItemRequestRepository;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.entity.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -38,15 +36,11 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static ru.practicum.shareit.item.mapper.ItemMapper.toDto;
 
-
 @ExtendWith(MockitoExtension.class)
 class ItemServiceImplTest {
 
     @Mock
     private ItemRepository itemRepository;
-    @Mock
-    private ItemRequestRepository itemRequestRepository;
-
     @Mock
     private UserRepository userRepository;
 
@@ -59,7 +53,6 @@ class ItemServiceImplTest {
     @InjectMocks
     private ItemServiceImpl itemService;
 
-
     private final User user = User.builder()
             .id(1L)
             .name("username")
@@ -70,13 +63,6 @@ class ItemServiceImplTest {
             .id(2L)
             .name("username2")
             .email("email2@email.com")
-            .build();
-
-
-    private final UserDto userDto = UserDto.builder()
-            .id(1L)
-            .name("username")
-            .email("email@email.com")
             .build();
 
     private final Item item = Item.builder()
@@ -113,7 +99,6 @@ class ItemServiceImplTest {
                     .plusDays(1L))
             .build();
 
-
     @Test
     void addNewItemWhenInvoked() {
         Item expectedItem = Item.builder()
@@ -127,7 +112,6 @@ class ItemServiceImplTest {
 
         ItemDto actualItem = itemService.create(toDto(expectedItem), 1L);
         assertEquals(expectedItem.getName(), actualItem.getName());
-
     }
 
     @Test
@@ -139,7 +123,6 @@ class ItemServiceImplTest {
 
         assertEquals(itemDto, actualItemDto);
     }
-
 
     @Test
     void updateItem() {
@@ -179,7 +162,6 @@ class ItemServiceImplTest {
         NotFoundException itemNotFoundException = assertThrows(NotFoundException.class, () -> itemService.update(toDto(item), itemDto.getId(), user.getId()));
         assertEquals(itemNotFoundException.getMessage(), "Предмет c id = 1 не найден!");
     }
-
 
     @Test
     void getAllComments() {
@@ -231,7 +213,5 @@ class ItemServiceImplTest {
         NotFoundException userBookingsNotFoundException = assertThrows(NotFoundException.class, () -> itemService.createComment(user.getId(), CommentMapper.toDto(comment), item.getId()));
 
         assertEquals(userBookingsNotFoundException.getMessage(), "Пользователь c id = 1 не найден!");
-
     }
-
 }

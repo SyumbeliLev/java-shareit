@@ -50,7 +50,6 @@ class ItemControllerTest {
             .owner(user)
             .build();
 
-
     @Test
     @SneakyThrows
     void createItemWhenItemIsValid() {
@@ -203,7 +202,6 @@ class ItemControllerTest {
 
         assertEquals(objectMapper.writeValueAsString(itemsDtoToExpect), result);
     }
-
 
     @Test
     @SneakyThrows

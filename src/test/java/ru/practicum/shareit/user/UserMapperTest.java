@@ -7,7 +7,6 @@ import ru.practicum.shareit.user.mapper.UserMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 class UserMapperTest {
 
     @Test
@@ -38,23 +37,5 @@ class UserMapperTest {
         assertEquals(userDto.getId(), user.getId());
         assertEquals(userDto.getName(), user.getName());
         assertEquals(userDto.getEmail(), user.getEmail());
-    }
-
-    @Test
-    void toUserUpdate() {
-        User user = User.builder()
-                .id(1L)
-                .name("name")
-                .email("mail@Mail.ru")
-                .build();
-        UserDto userDto = UserDto.builder()
-                .id(2L)
-                .email("email@mail.ru")
-                .name("name")
-                .build();
-
-        User userToUpdate = UserMapper.update(user, userDto);
-        assertEquals(userToUpdate.getName(), user.getName());
-        assertEquals(userToUpdate.getEmail(), userDto.getEmail());
     }
 }

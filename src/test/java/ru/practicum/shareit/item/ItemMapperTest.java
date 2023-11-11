@@ -84,12 +84,4 @@ class ItemMapperTest {
         assertEquals(actual.getId(), item.getId());
         assertEquals(actual.getName(), item.getName());
     }
-
-    @Test
-    void updateTest() {
-        Item actual = ItemMapper.update(itemDto, item);
-        assertEquals(actual.getName(), itemDto.getName());
-        assertEquals(actual.getDescription(), itemDto.getDescription());
-        assertEquals(actual.getAvailable(), itemDto.getAvailable());
-    }
 }

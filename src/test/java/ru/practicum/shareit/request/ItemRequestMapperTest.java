@@ -65,7 +65,6 @@ public class ItemRequestMapperTest {
         assertEquals(actual.getId(), request.getId());
     }
 
-
     @Test
     void toDto() {
         User owner = User.builder()

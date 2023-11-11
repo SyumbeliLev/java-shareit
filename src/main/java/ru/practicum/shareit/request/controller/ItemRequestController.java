@@ -27,7 +27,6 @@ public class ItemRequestController {
         return service.create(userId, requestDto);
     }
 
-
     @GetMapping
     public List<ItemRequestDtoOut> findUserRequest(@RequestHeader(USER_ID) long userId) {
         return service.findUserRequests(userId);
@@ -46,5 +45,4 @@ public class ItemRequestController {
     public ItemRequestDtoOut findById(@RequestHeader(USER_ID) long userId, @PathVariable long requestId) {
         return service.findById(userId, requestId);
     }
-
 }

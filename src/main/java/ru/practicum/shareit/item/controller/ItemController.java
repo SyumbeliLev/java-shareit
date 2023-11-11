@@ -46,13 +46,11 @@ public class ItemController {
         return service.findAll(userId, pageable);
     }
 
-
     @GetMapping("/{itemId}")
     public ItemDto findById(@RequestHeader(USER_ID) long userId, @PathVariable("itemId") long itemId) {
         log.info("Get запрос на получение предмета с id = {} пользователем с id = {} ", itemId, userId);
         return service.findItemById(itemId, userId);
     }
-
 
     @GetMapping("/search")
     public Collection<ItemDto> searchForItem(@NotNull @RequestParam(name = "text") String query,
@@ -62,7 +60,6 @@ public class ItemController {
         Pageable pageable = PageRequest.of(from / size, size);
         return service.search(query, pageable);
     }
-
 
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(@RequestHeader(USER_ID) long userId, @Validated @RequestBody CommentDto commentDto, @PathVariable long itemId) {

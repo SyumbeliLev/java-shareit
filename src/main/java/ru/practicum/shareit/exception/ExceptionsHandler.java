@@ -1,6 +1,7 @@
 package ru.practicum.shareit.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,11 +23,11 @@ public class ExceptionsHandler {
         );
     }
 
-    @ExceptionHandler(DuplicateEmailException.class)
+    @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleConflictException(final ShareItException e) {
+    public ErrorResponse handleConflictException(final DataIntegrityViolationException e) {
         log.warn("Получен статус 409 CONFLICT {}", e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
+        return new ErrorResponse("Такой email, уже зарегистрирован!");
     }
 
     @ExceptionHandler

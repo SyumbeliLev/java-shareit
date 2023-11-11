@@ -29,9 +29,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,9 +62,24 @@ public class ItemServiceImpl implements ItemService {
                 .equals(userId)) {
             throw new NotFoundException("Пользователь с id = " + userId + " не является собственником вещи id = " + itemId);
         }
-        Item update = ItemMapper.update(itemDto, entity);
-        itemRepository.save(update);
-        return ItemMapper.toDto(update);
+        String name = itemDto.getName();
+        if (name != null && !name.isBlank()) {
+            entity.setName(name);
+        }
+        String description = itemDto.getDescription();
+        if (description != null && !description.isBlank()) {
+            entity.setDescription(description);
+        }
+        if (itemDto.getAvailable() != null) {
+            entity.setAvailable(itemDto.getAvailable());
+        }
+        Long requestId = itemDto.getRequestId();
+        if (requestId != null) {
+            entity.setRequest(entity.getRequest());
+        }
+
+        itemRepository.save(entity);
+        return ItemMapper.toDto(entity);
     }
 
     @Override
@@ -84,7 +97,7 @@ public class ItemServiceImpl implements ItemService {
         List<Booking> bookings = bookingRepository.findAllByItemAndStatusOrderByStartDateAsc(item, BookingStatus.APPROVED);
         List<BookingDtoOut> bookingDTOList = bookings.stream()
                 .map(BookingMapper::toDto)
-                .collect(toList());
+                .collect(Collectors.toList());
 
         itemDtoOut.setLastBooking(getLastBooking(bookingDTOList, LocalDateTime.now()));
         itemDtoOut.setNextBooking(getNextBooking(bookingDTOList, LocalDateTime.now()));
@@ -97,20 +110,20 @@ public class ItemServiceImpl implements ItemService {
         List<Item> itemList = itemRepository.findAllByOwnerId(userId, pageable);
         List<Long> idList = itemList.stream()
                 .map(Item::getId)
-                .collect(toList());
+                .collect(Collectors.toList());
         Map<Long, List<CommentDto>> comments = commentRepository.findAllByItemIdIn(idList)
                 .stream()
                 .map(CommentMapper::toDto)
-                .collect(groupingBy(CommentDto::getItemId, toList()));
+                .collect(Collectors.groupingBy(CommentDto::getItemId, Collectors.toList()));
 
         Map<Long, List<BookingDtoOut>> bookings = bookingRepository.findAllByItemInAndStatusOrderByStartDateAsc(itemList, BookingStatus.APPROVED)
                 .stream()
                 .map(BookingMapper::toDto)
-                .collect(groupingBy(BookingDtoOut::getItemId, toList()));
+                .collect(Collectors.groupingBy(BookingDtoOut::getItemId, Collectors.toList()));
 
         return itemList.stream()
                 .map(item -> ItemMapper.toDto(item, getLastBooking(bookings.get(item.getId()), LocalDateTime.now()), comments.get(item.getId()), getNextBooking(bookings.get(item.getId()), LocalDateTime.now())))
-                .collect(toList());
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -121,7 +134,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.search(text, pageable)
                 .stream()
                 .map(ItemMapper::toDto)
-                .collect(toList());
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -154,9 +167,8 @@ public class ItemServiceImpl implements ItemService {
 
         return comments.stream()
                 .map(CommentMapper::toDto)
-                .collect(toList());
+                .collect(Collectors.toList());
     }
-
 
     private BookingDtoOut getLastBooking(List<BookingDtoOut> bookings, LocalDateTime time) {
         if (bookings == null || bookings.isEmpty()) {

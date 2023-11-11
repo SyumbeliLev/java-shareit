@@ -28,7 +28,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @WebMvcTest(controllers = ItemRequestController.class)
 class ItemRequestControllerTest {
     private static final String USER_ID = "X-Sharer-User-id";

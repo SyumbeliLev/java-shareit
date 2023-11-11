@@ -199,7 +199,6 @@ class BookingControllerTest {
         assertEquals(objectMapper.writeValueAsString(List.of(bookingDtoOut)), result);
     }
 
-
     @Test
     @SneakyThrows
     void getAllByOwner() {
@@ -222,5 +221,4 @@ class BookingControllerTest {
 
         assertEquals(objectMapper.writeValueAsString(List.of(bookingDtoOut)), result);
     }
-
 }

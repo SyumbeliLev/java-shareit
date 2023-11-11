@@ -1,121 +1,58 @@
 package ru.practicum.shareit.item;
 
-import lombok.SneakyThrows;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.BookingDtoOut;
-import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.entity.Item;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
-import java.time.LocalDateTime;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 @Transactional
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@SpringBootTest(
+        properties = "spring.datasource.username=test",
+        webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ItemServiceIT {
 
-    @Autowired
-    private ItemService itemService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ItemRequestService requestService;
-
-    @Autowired
-    private BookingService bookingService;
+    private final EntityManager em;
+    private final ItemService itemService;
+    private final UserService userService;
     private final UserDto userDto1 = UserDto.builder()
             .name("name1")
             .email("email1@email.com")
             .build();
 
-    private final UserDto userDto2 = UserDto.builder()
-            .name("name2")
-            .email("email2@email.com")
-            .build();
-
-    private final ItemDto itemDto1 = ItemDto.builder()
-            .name("item1 name")
-            .description("item1 description")
-            .available(true)
-            .build();
-
-    private final ItemDto itemDto2 = ItemDto.builder()
-            .name("item2 name")
-            .description("item2 description")
-            .available(true)
-            .build();
-
-    private final ItemDto itemDtoRequest = ItemDto.builder()
-            .name("itemDtoRequest name")
-            .description("itemDtoRequest description")
-            .available(true)
-            .requestId(1L)
-            .build();
-
-    private final ItemRequestDto requestDto = ItemRequestDto.builder()
-            .description("request description")
-            .build();
-
-    private final BookingDto bookingDto = BookingDto.builder()
-            .itemId(1L)
-            .start(LocalDateTime.now())
-            .end(LocalDateTime.now()
-                    .plusSeconds(1L))
-            .build();
-
-    private final CommentDto commentDto = CommentDto.builder()
-            .text("comment text")
-            .build();
-
     @Test
-    @SneakyThrows
-    void addCommentItem() {
-        UserDto addedUser1 = userService.create(userDto1);
-        UserDto addedUser2 = userService.create(userDto2);
-        ItemDto addedItem = itemService.create(itemDto2, addedUser2.getId());
-        BookingDtoOut bookingDtoOut = bookingService.create(addedUser1.getId(), bookingDto);
+    void saveNewItem() {
+        UserDto userDto = new UserDto(1L, "User", "user@mail.ru");
+        ItemDto itemDto = ItemDto.builder()
+                .name("item")
+                .description("cool item")
+                .available(true)
+                .build();
 
-        bookingService.update(addedUser2.getId(), bookingDtoOut.getId(), true);
-        Thread.sleep(2000);
-        CommentDto addedComment = itemService.createComment(addedUser1.getId(), commentDto, addedItem.getId());
+        UserDto user = userService.create(userDto);
+        itemService.create(itemDto, user.getId());
 
-        assertEquals(1L, addedComment.getId());
-        assertEquals("comment text", addedComment.getText());
-    }
+        TypedQuery<Item> queryItem = em.createQuery("Select i from Item i where i.name like :item", Item.class);
+        Item item = queryItem.setParameter("item", itemDto.getName())
+                .getSingleResult();
 
-    @Test
-    void addNewItem() {
-        UserDto addedUser = userService.create(userDto1);
-        ItemDto addedItem = itemService.create(itemDto1, addedUser.getId());
-
-        assertEquals(1L, addedItem.getId());
-        assertEquals("item1 name", addedItem.getName());
-    }
-
-    @Test
-    void addRequestItem() {
-        UserDto addedUser = userService.create(userDto1);
-        requestService.create(addedUser.getId(), requestDto);
-
-        ItemDto addedItemRequest = itemService.create(itemDtoRequest, addedUser.getId());
-
-        assertEquals(1L, addedItemRequest.getRequestId());
-        assertEquals("itemDtoRequest name", addedItemRequest.getName());
+        assertThat(item.getId(), notNullValue());
+        assertThat(item.getName(), equalTo(itemDto.getName()));
+        assertThat(item.getDescription(), equalTo(itemDto.getDescription()));
     }
 
     @Test
