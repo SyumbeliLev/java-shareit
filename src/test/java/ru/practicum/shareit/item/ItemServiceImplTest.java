@@ -112,6 +112,8 @@ class ItemServiceImplTest {
 
         ItemDto actualItem = itemService.create(toDto(expectedItem), 1L);
         assertEquals(expectedItem.getName(), actualItem.getName());
+        assertEquals(expectedItem.getDescription(), actualItem.getDescription());
+        assertEquals(expectedItem.getAvailable(), actualItem.getAvailable());
     }
 
     @Test

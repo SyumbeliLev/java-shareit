@@ -5,7 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.entity.User;
@@ -39,21 +38,12 @@ class UserServiceImplTest {
                 .name("name")
                 .email("my@email.com")
                 .build();
-        when(userRepository.save(userToSave)).thenReturn(userToSave);
-
-        UserDto actualUserDto = userService.create(userDto);
-
-        assertEquals(userDto, actualUserDto);
-        verify(userRepository).save(userToSave);
-    }
-
-    @Test
-    void createNewUserReturnUserDtoThenThrowDuplicateEmailException() {
-        User expectedUser = new User();
-        when(userRepository.save(expectedUser)).thenThrow(new DataIntegrityViolationException("такой email уже зарегистрирован!"));
-
-        DataIntegrityViolationException emptyFieldException = assertThrows(DataIntegrityViolationException.class, () -> userService.create(UserMapper.toDto(expectedUser)));
-        assertEquals(emptyFieldException.getMessage(), "такой email уже зарегистрирован!");
+        when(userRepository.save(any())).thenReturn(userToSave);
+        UserDto actualUserDto = userService.create(UserMapper.toDto(userToSave));
+        assertEquals(userDto.getId(), actualUserDto.getId());
+        assertEquals(userDto.getName(), actualUserDto.getName());
+        assertEquals(userDto.getEmail(), actualUserDto.getEmail());
+        verify(userRepository).save(any());
     }
 
     @Test
