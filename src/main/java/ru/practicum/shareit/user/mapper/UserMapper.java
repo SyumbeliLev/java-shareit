@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user.mapper;
 
-
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.entity.User;
@@ -21,16 +20,5 @@ public class UserMapper {
                 .email(userDto.getEmail())
                 .name(userDto.getName())
                 .build();
-    }
-
-    public void update(User entity, UserDto dto) {
-        String name = dto.getName();
-        if (name != null && !name.isBlank()) {
-            entity.setName(name);
-        }
-        String email = dto.getEmail();
-        if (email != null && !email.isBlank()) {
-            entity.setEmail(email);
-        }
     }
 }

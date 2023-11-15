@@ -12,7 +12,6 @@ public enum BookingState {
     WAITING,
     REJECTED;
 
-
     public static BookingState checkExist(String outState) {
         return Arrays.stream(BookingState.values())
                 .filter(bookingState -> bookingState.name()

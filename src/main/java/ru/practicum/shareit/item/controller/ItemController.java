@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -9,11 +11,13 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.ValidationGroups;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 
 @Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
@@ -34,11 +38,13 @@ public class ItemController {
     }
 
     @GetMapping()
-    public List<ItemDto> findAllByUserId(@RequestHeader(USER_ID) long userId) {
+    public List<ItemDto> findAllByUserId(@RequestHeader(USER_ID) long userId,
+                                         @RequestParam(defaultValue = "0") @Min(0) int from,
+                                         @RequestParam(defaultValue = "10") @Min(1) int size) {
         log.info("Get запрос на получение всех предметов пользователя с id: {}", userId);
-        return service.findAll(userId);
+        Pageable pageable = PageRequest.of(from / size, size);
+        return service.findAll(userId, pageable);
     }
-
 
     @GetMapping("/{itemId}")
     public ItemDto findById(@RequestHeader(USER_ID) long userId, @PathVariable("itemId") long itemId) {
@@ -47,9 +53,12 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> searchForItem(@NotNull @RequestParam(name = "text") String query) {
+    public Collection<ItemDto> searchForItem(@NotNull @RequestParam(name = "text") String query,
+                                             @RequestParam(defaultValue = "0") @Min(0) int from,
+                                             @RequestParam(defaultValue = "10") @Min(1) int size) {
         log.info("Get запрос на поиск предмета через поисковик : {}", query);
-        return service.search(query);
+        Pageable pageable = PageRequest.of(from / size, size);
+        return service.search(query, pageable);
     }
 
     @PostMapping("/{itemId}/comment")

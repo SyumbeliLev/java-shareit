@@ -50,22 +50,4 @@ public class ItemMapper {
                 item.getId(),
                 item.getName());
     }
-
-    public void update(ItemDto dto, Item entity) {
-        String name = dto.getName();
-        if (name != null && !name.isBlank()) {
-            entity.setName(name);
-        }
-        String description = dto.getDescription();
-        if (description != null && !description.isBlank()) {
-            entity.setDescription(description);
-        }
-        if (dto.getAvailable() != null) {
-            entity.setAvailable(dto.getAvailable());
-        }
-        Long requestId = dto.getRequestId();
-        if (requestId != null) {
-            entity.setRequest(null);
-        }
-    }
 }
