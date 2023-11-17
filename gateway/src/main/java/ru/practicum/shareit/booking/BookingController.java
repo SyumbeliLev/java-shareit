@@ -15,6 +15,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
+import static ru.practicum.shareit.booking.BookingValidator.validateBookingData;
+
 @Controller
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
@@ -22,11 +24,11 @@ import javax.validation.constraints.PositiveOrZero;
 @Validated
 public class BookingController {
     private final BookingClient bookingClient;
-
     @PostMapping
     public ResponseEntity<Object> create(@RequestHeader("X-Sharer-User-Id") long userId,
                                          @RequestBody @Valid BookItemRequestDto requestDto) {
         log.info("Creating booking {}, userId={}", requestDto, userId);
+        validateBookingData(requestDto);
         return bookingClient.bookItem(userId, requestDto);
     }
 

@@ -107,7 +107,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> findAll(long userId, Pageable pageable) {
         getUser(userId);
-        List<Item> itemList = itemRepository.findAllByOwnerId(userId, pageable);
+        List<Item> itemList = itemRepository.findAllByOwnerId(userId, pageable)
+                .stream()
+                .sorted((o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()))
+                .collect(Collectors.toList());
         List<Long> idList = itemList.stream()
                 .map(Item::getId)
                 .collect(Collectors.toList());
