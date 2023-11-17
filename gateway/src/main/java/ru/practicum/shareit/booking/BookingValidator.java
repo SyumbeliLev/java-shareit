@@ -6,7 +6,7 @@ import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 
 public class BookingValidator {
-    public static void  validateBookingData(BookItemRequestDto bookingDto) {
+    public static void validateBookingData(BookItemRequestDto bookingDto) {
         if (bookingDto.getStart() == null || bookingDto.getEnd() == null) {
             throw new ValidationException("Booking: Dates are null!");
         }

@@ -24,6 +24,7 @@ import static ru.practicum.shareit.booking.BookingValidator.validateBookingData;
 @Validated
 public class BookingController {
     private final BookingClient bookingClient;
+
     @PostMapping
     public ResponseEntity<Object> create(@RequestHeader("X-Sharer-User-Id") long userId,
                                          @RequestBody @Valid BookItemRequestDto requestDto) {
