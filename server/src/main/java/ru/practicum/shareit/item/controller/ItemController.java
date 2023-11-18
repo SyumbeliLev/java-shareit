@@ -12,7 +12,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import java.util.Collection;
 import java.util.List;
 
-import static ru.practicum.shareit.constraint.HEADER_USER_ID;
+import static ru.practicum.shareit.Constraint.HEADER_USER_ID;
 
 
 @Slf4j

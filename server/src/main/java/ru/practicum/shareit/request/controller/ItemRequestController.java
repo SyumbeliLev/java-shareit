@@ -11,7 +11,7 @@ import ru.practicum.shareit.request.service.ItemRequestService;
 
 import java.util.List;
 
-import static ru.practicum.shareit.constraint.HEADER_USER_ID;
+import static ru.practicum.shareit.Constraint.HEADER_USER_ID;
 
 
 @RestController
