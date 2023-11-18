@@ -14,7 +14,6 @@ import javax.validation.ValidationException;
 @RestControllerAdvice
 public class ExceptionsHandler {
 
-
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final MethodArgumentNotValidException e) {

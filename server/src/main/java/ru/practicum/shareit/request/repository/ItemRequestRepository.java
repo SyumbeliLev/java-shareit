@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,5 +13,5 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
     List<ItemRequest> findAllByRequesterId(Long requesterId);
 
     @Query("select ir from ItemRequest ir where ir.requester.id != :userId")
-    List<ItemRequest> findAllByOtherUsers(Long userId, Pageable page);
+    Page<ItemRequest> findAllByOtherUsers(Long userId, Pageable page);
 }

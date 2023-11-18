@@ -15,7 +15,6 @@ import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.entity.User;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -75,20 +74,21 @@ class RequestRepositoryTest {
     void findAllByRequesterId() {
         List<ItemRequest> requests = requestRepository.findAllByRequesterId(1L);
 
-        assertEquals(requests.size(), 1);
-        assertEquals(requests.get(0)
-                .getDescription(), "request description");
+        assertEquals(1, requests.size());
+        assertEquals("request description", requests.get(0)
+                .getDescription());
     }
 
     @Test
     void findAllByAllOtherUsers_whenUserIdIsUserOneId_thenReturnListOfUserTwoRequest() {
         Pageable page = PageRequest.of(0, 10);
-        List<ItemRequest> requestList = new ArrayList<>(requestRepository.findAllByOtherUsers(user1.getId(), page));
+        List<ItemRequest> requestList = requestRepository.findAllByOtherUsers(user1.getId(), page)
+                .getContent();
 
-        assertEquals(requestList.size(), 1);
-        assertEquals(requestList.get(0)
+        assertEquals(1, requestList.size());
+        assertEquals("name2", requestList.get(0)
                 .getRequester()
-                .getName(), "name2");
+                .getName());
     }
 
     @AfterEach

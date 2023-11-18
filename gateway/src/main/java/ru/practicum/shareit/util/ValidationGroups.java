@@ -1,4 +1,4 @@
-package ru.practicum.shareit.marker;
+package ru.practicum.shareit.util;
 
 import javax.validation.groups.Default;
 

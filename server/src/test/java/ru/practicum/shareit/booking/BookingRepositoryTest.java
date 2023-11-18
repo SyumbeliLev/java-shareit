@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.entity.Booking;
@@ -94,42 +95,50 @@ class BookingRepositoryTest {
 
     @Test
     void findAllByBookerId() {
-        List<Booking> bookings = bookingRepository.findAllByBookerId(1L, PageRequest.of(0, 10));
+        Page<Booking> bookings = bookingRepository.findAllByBookerId(1L, PageRequest.of(0, 10));
 
-        assertEquals(bookings.size(), 3);
-        assertEquals(bookings.get(0)
+        assertEquals(bookings.getContent()
+                .size(), 3);
+        assertEquals(bookings.getContent()
+                .get(0)
                 .getBooker()
                 .getId(), 1L);
     }
 
     @Test
     void findAllCurrentBookingsByBookerId() {
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndCurrentDate(1L, LocalDateTime.now(),
+        Page<Booking> bookings = bookingRepository.findAllByBookerIdAndCurrentDate(1L, LocalDateTime.now(),
                 PageRequest.of(0, 10));
 
-        assertEquals(bookings.size(), 1);
-        assertEquals(bookings.get(0)
+        assertEquals(bookings.getContent()
+                .size(), 1);
+        assertEquals(bookings.getContent()
+                .get(0)
                 .getBooker()
                 .getId(), 1L);
     }
 
     @Test
     void findAllPastBookingsByBookerId() {
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndDateBefore(1L, LocalDateTime.now(),
+        Page<Booking> bookings = bookingRepository.findAllByBookerIdAndEndDateBefore(1L, LocalDateTime.now(),
                 PageRequest.of(0, 10));
 
-        assertEquals(bookings.size(), 1);
-        assertEquals(bookings.get(0)
+        assertEquals(bookings.getContent()
+                .size(), 1);
+        assertEquals(bookings.getContent()
+                .get(0)
                 .getId(), 2L);
     }
 
     @Test
     void findAllFutureBookingsByBookerId() {
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndDateAfter(1L, LocalDateTime.now(),
+        Page<Booking> bookings = bookingRepository.findAllByBookerIdAndEndDateAfter(1L, LocalDateTime.now(),
                 PageRequest.of(0, 10));
 
-        assertEquals(bookings.size(), 2);
-        assertEquals(bookings.get(0)
+        assertEquals(bookings.getContent()
+                .size(), 2);
+        assertEquals(bookings.getContent()
+                .get(0)
                 .getId(), 1L);
     }
 
@@ -146,11 +155,13 @@ class BookingRepositoryTest {
                 .build();
 
         bookingRepository.save(waitingBooking);
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndStatus(1L, BookingStatus.WAITING,
+        Page<Booking> bookings = bookingRepository.findAllByBookerIdAndStatus(1L, BookingStatus.WAITING,
                 PageRequest.of(0, 10));
 
-        assertEquals(bookings.size(), 1);
-        assertEquals(bookings.get(0)
+        assertEquals(bookings.getContent()
+                .size(), 1);
+        assertEquals(bookings.getContent()
+                .get(0)
                 .getStatus(), BookingStatus.WAITING);
     }
 
@@ -167,28 +178,33 @@ class BookingRepositoryTest {
                 .build();
 
         bookingRepository.save(rejectedBooking);
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndStatus(1L, BookingStatus.REJECTED,
+        Page<Booking> bookings = bookingRepository.findAllByBookerIdAndStatus(1L, BookingStatus.REJECTED,
                 PageRequest.of(0, 10));
 
-        assertEquals(bookings.size(), 1);
-        assertEquals(bookings.get(0)
+        assertEquals(bookings.getContent()
+                .size(), 1);
+        assertEquals(bookings.getContent()
+                .get(0)
                 .getStatus(), BookingStatus.REJECTED);
     }
 
     @Test
     void findAllByOwnerId() {
-        List<Booking> bookings = bookingRepository.findAllByItem_Owner_Id(2L, PageRequest.of(0, 10));
+        Page<Booking> bookings = bookingRepository.findAllByItem_Owner_Id(2L, PageRequest.of(0, 10));
 
-        assertEquals(bookings.size(), 3);
+        assertEquals(bookings.getContent()
+                .size(), 3);
     }
 
     @Test
     void findAllCurrentBookingsByOwnerId() {
-        List<Booking> bookings = bookingRepository.findAllByItem_Owner_IdAndCurrentDate(2L, LocalDateTime.now(),
+        Page<Booking> bookings = bookingRepository.findAllByItem_Owner_IdAndCurrentDate(2L, LocalDateTime.now(),
                 PageRequest.of(0, 10));
 
-        assertEquals(bookings.size(), 1);
-        assertEquals(bookings.get(0)
+        assertEquals(bookings.getContent()
+                .size(), 1);
+        assertEquals(bookings.getContent()
+                .get(0)
                 .getItem()
                 .getOwner()
                 .getId(), 2L);
@@ -196,11 +212,13 @@ class BookingRepositoryTest {
 
     @Test
     void findAllPastBookingsByOwnerId() {
-        List<Booking> bookings = bookingRepository.findAllByItem_Owner_IdAndEndDateBefore(2L, LocalDateTime.now(),
+        Page<Booking> bookings = bookingRepository.findAllByItem_Owner_IdAndEndDateBefore(2L, LocalDateTime.now(),
                 PageRequest.of(0, 10));
 
-        assertEquals(bookings.size(), 1);
-        assertEquals(bookings.get(0)
+        assertEquals(bookings.getContent()
+                .size(), 1);
+        assertEquals(bookings.getContent()
+                .get(0)
                 .getItem()
                 .getOwner()
                 .getId(), 2L);
@@ -208,11 +226,13 @@ class BookingRepositoryTest {
 
     @Test
     void findAllFutureBookingsByOwnerId() {
-        List<Booking> bookings = bookingRepository.findAllByItem_Owner_IdAndEndDateAfter(2L, LocalDateTime.now(),
+        Page<Booking> bookings = bookingRepository.findAllByItem_Owner_IdAndEndDateAfter(2L, LocalDateTime.now(),
                 PageRequest.of(0, 10));
 
-        assertEquals(bookings.size(), 2);
-        assertEquals(bookings.get(0)
+        assertEquals(bookings.getContent()
+                .size(), 2);
+        assertEquals(bookings.getContent()
+                .get(0)
                 .getItem()
                 .getOwner()
                 .getId(), 2L);
@@ -231,11 +251,13 @@ class BookingRepositoryTest {
                 .build();
 
         bookingRepository.save(waitingBooking);
-        List<Booking> bookings = bookingRepository.findAllByItem_Owner_IdAndStatus(2L, BookingStatus.WAITING,
+        Page<Booking> bookings = bookingRepository.findAllByItem_Owner_IdAndStatus(2L, BookingStatus.WAITING,
                 PageRequest.of(0, 10));
 
-        assertEquals(bookings.size(), 1);
-        assertEquals(bookings.get(0)
+        assertEquals(bookings.getContent()
+                .size(), 1);
+        assertEquals(bookings.getContent()
+                .get(0)
                 .getStatus(), BookingStatus.WAITING);
     }
 
@@ -252,11 +274,13 @@ class BookingRepositoryTest {
                 .build();
 
         bookingRepository.save(rejectedBooking);
-        List<Booking> bookings = bookingRepository.findAllByItem_Owner_IdAndStatus(2L, BookingStatus.REJECTED,
+        Page<Booking> bookings = bookingRepository.findAllByItem_Owner_IdAndStatus(2L, BookingStatus.REJECTED,
                 PageRequest.of(0, 10));
 
-        assertEquals(bookings.size(), 1);
-        assertEquals(bookings.get(0)
+        assertEquals(bookings.getContent()
+                .size(), 1);
+        assertEquals(bookings.getContent()
+                .get(0)
                 .getStatus(), BookingStatus.REJECTED);
     }
 

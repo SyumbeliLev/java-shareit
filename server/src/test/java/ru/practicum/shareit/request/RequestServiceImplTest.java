@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -95,7 +96,7 @@ class RequestServiceImplTest {
         List<ItemRequestDtoOut> expectedRequestsDto = List.of(RequestMapper.toDtoOut(request));
         when(userService.findUserById(user.getId())).thenReturn(userDto);
         when(requestRepository.findAllByOtherUsers(anyLong(), any(PageRequest.class)))
-                .thenReturn(List.of(request));
+                .thenReturn(new PageImpl<>(List.of(request)));
         Pageable pageable = PageRequest.of(0, 10, Sort.by("created")
                 .descending());
         List<ItemRequestDtoOut> actualRequestsDto = requestService.findAllRequests(userDto.getId(), pageable);

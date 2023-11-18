@@ -6,13 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.item.entity.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.entity.User;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -52,18 +51,22 @@ class ItemRepositoryTest {
 
     @Test
     void findAllByOwnerId() {
-        List<Item> items = itemRepository.findAllByOwnerId(1L, PageRequest.of(0, 1));
+        Page<Item> items = itemRepository.findAllByOwnerId(1L, PageRequest.of(0, 1));
 
-        assertEquals(items.size(), 1);
-        assertEquals(items.get(0)
+        assertEquals(items.getContent()
+                .size(), 1);
+        assertEquals(items.getContent()
+                .get(0)
                 .getName(), "name");
     }
 
     @Test
     void search() {
-        List<Item> items = itemRepository.search("name", PageRequest.of(0, 1));
-        assertEquals(items.size(), 1);
-        assertEquals(items.get(0)
+        Page<Item> items = itemRepository.search("name", PageRequest.of(0, 1));
+        assertEquals(items.getContent()
+                .size(), 1);
+        assertEquals(items.getContent()
+                .get(0)
                 .getName(), "name");
     }
 }

@@ -11,34 +11,35 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 import java.util.List;
 
+import static ru.practicum.shareit.constraint.HEADER_USER_ID;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
 public class BookingController {
     private final BookingService service;
-    private static final String USER_ID = "X-Sharer-User-id";
 
     @PostMapping
-    public BookingDtoOut create(@RequestHeader(USER_ID) long userId, @RequestBody BookingDto bookingDto) {
+    public BookingDtoOut create(@RequestHeader(HEADER_USER_ID) long userId, @RequestBody BookingDto bookingDto) {
         log.info("POST запрос на создание нового бронирования вещи от пользователя c id: {} ", userId);
         return service.create(userId, bookingDto);
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDtoOut update(@RequestHeader(USER_ID) long userId, @PathVariable("bookingId") long bookingId, @RequestParam(name = "approved") Boolean approved) {
+    public BookingDtoOut update(@RequestHeader(HEADER_USER_ID) long userId, @PathVariable("bookingId") long bookingId, @RequestParam(name = "approved") Boolean approved) {
         log.info("PATCH запрос на обновление статуса бронирования вещи от владельца с id: {}", userId);
         return service.update(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")
-    public BookingDtoOut findDetailsBooking(@RequestHeader(USER_ID) long userId, @PathVariable("bookingId") long bookingId) {
+    public BookingDtoOut findDetailsBooking(@RequestHeader(HEADER_USER_ID) long userId, @PathVariable("bookingId") long bookingId) {
         log.info("GET запрос на получение данных о  бронировании от пользователя с id: {}", userId);
         return service.findDetailsBooking(userId, bookingId);
     }
 
     @GetMapping
-    public List<BookingDtoOut> findAll(@RequestHeader(USER_ID) long userId,
+    public List<BookingDtoOut> findAll(@RequestHeader(HEADER_USER_ID) long userId,
                                        @RequestParam(value = "state", defaultValue = "ALL") String bookingState,
                                        @RequestParam(value = "from", defaultValue = "0") int from,
                                        @RequestParam(value = "size", defaultValue = "10") int size) {
@@ -48,7 +49,7 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public List<BookingDtoOut> getAllOwner(@RequestHeader(USER_ID) long ownerId, @RequestParam(value = "state", defaultValue = "ALL") String bookingState,
+    public List<BookingDtoOut> getAllOwner(@RequestHeader(HEADER_USER_ID) long ownerId, @RequestParam(value = "state", defaultValue = "ALL") String bookingState,
                                            @RequestParam(value = "from", defaultValue = "0") int from,
                                            @RequestParam(value = "size", defaultValue = "10") int size) {
         log.info("GET запрос на получение списка всех бронирований текущего владельца с id: {} и статусом {}", ownerId, bookingState);

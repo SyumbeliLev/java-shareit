@@ -6,14 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.marker.ValidationGroups;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.util.ValidationGroups;
 
-
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(path = "/users")
-@Slf4j
 public class UserController {
     private final UserClient userClient;
 

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.entity.Booking;
@@ -178,7 +179,7 @@ class ItemServiceImplTest {
 
     @Test
     void searchItems() {
-        when(itemRepository.findAllByOwnerId(anyLong(), any(Pageable.class))).thenReturn(List.of(item));
+        when(itemRepository.findAllByOwnerId(anyLong(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(item)));
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
 
         List<ItemDto> actualItemsDto = itemService.findAll(1L, PageRequest.of(0 / 10, 10));
