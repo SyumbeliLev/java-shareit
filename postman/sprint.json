@@ -5480,12 +5480,12 @@
                   "pm.test(\"Test user 'email' field\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData).to.have.property('email');",
-                  "    pm.expect(jsonData.email, '\"email\" must be \"practicum@yandex.ru\"').to.eql('practicum@yandex.ru');",
+                  "    pm.expect(jsonData.email, '\"email\" must be \"ithub@yandex.ru\"').to.eql('ithub@yandex.ru');",
                   "});",
                   "pm.test(\"Test user 'name' field\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData).to.have.property('name');",
-                  "    pm.expect(jsonData.name, '\"name\" must be \"practicum\"').to.eql('practicum');",
+                  "    pm.expect(jsonData.name, '\"name\" must be \"ithub\"').to.eql('ithub');",
                   "});",
                   ""
                 ],
@@ -5509,7 +5509,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"practicum\",\n    \"email\": \"practicum@yandex.ru\"\n}"
+              "raw": "{\n    \"name\": \"ithub\",\n    \"email\": \"ithub@yandex.ru\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/users",
